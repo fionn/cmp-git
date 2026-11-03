@@ -7,6 +7,12 @@ local system_opts = {
     timeout = 1000
 }
 
+---@type lsp.Range
+local shared_range = {
+    start = {line = 0, character = 0},
+    ["end"] = {line = 0, character = 0}
+}
+
 ---@type lsp.CompletionItem[]
 local commit_completion_items = {}
 local updated_commits = false
@@ -34,10 +40,13 @@ local function get_commits()
             ---@type lsp.CompletionItem
             local completion_item = {
                 label = hash:sub(1, 7),
-                insertText = hash,
                 documentation = {
                     kind = "plaintext",
                     value = x,
+                },
+                textEdit = {
+                    newText = hash,
+                    range = shared_range
                 },
                 kind = 21
             }
@@ -73,6 +82,15 @@ function source:complete(params, callback)
         callback()
         return
     end
+
+    -- Because the triggering character ":" shouldn't be entered, we need to get
+    -- the completion to eat it. We do this by setting the completion item's
+    -- textEdit.range, which is a shared table that we update on completion.
+    ---@type integer
+    shared_range.start.line = params.context.cursor.line
+    shared_range.start.character = params.context.cursor.character - 1
+    shared_range["end"].line = params.context.cursor.line
+    shared_range["end"].character = params.context.cursor.character
 
     get_commits()
     callback(commit_completion_items)
