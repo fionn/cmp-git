@@ -34,7 +34,7 @@ local function get_commits()
                 x = "commit " .. x
             end
 
-            local hash = x:match("^commit (%x+)")
+            local hash = assert(x:match("^commit (%x+)"))
             assert(#hash <= 64)
 
             ---@type lsp.CompletionItem
@@ -86,11 +86,12 @@ function source:complete(params, callback)
     -- Because the triggering character ":" shouldn't be entered, we need to get
     -- the completion to eat it. We do this by setting the completion item's
     -- textEdit.range, which is a shared table that we update on completion.
-    ---@type integer
-    shared_range.start.line = params.context.cursor.line
-    shared_range.start.character = params.context.cursor.character - 1
-    shared_range["end"].line = params.context.cursor.line
-    shared_range["end"].character = params.context.cursor.character
+    local line = params.context.cursor.line
+    local character = assert(params.context.cursor.character)
+    shared_range.start.line = line
+    shared_range.start.character = character - 1
+    shared_range["end"].line = line
+    shared_range["end"].character = character
 
     get_commits()
     callback(commit_completion_items)
