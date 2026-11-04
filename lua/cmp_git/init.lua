@@ -53,7 +53,7 @@ local function get_commits()
             }
             table.insert(commit_completion_items, completion_item)
         end
-    end):wait(1000)
+    end):wait(system_opts.timeout)
 end
 
 ---@diagnostic disable-next-line
