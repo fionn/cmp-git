@@ -34,8 +34,9 @@ local function get_commits()
                 x = "commit " .. x
             end
 
+            ---@type string
             local hash = assert(x:match("^commit (%x+)"))
-            assert(#hash <= 64)
+            assert(hash:len() <= 64)
 
             ---@type lsp.CompletionItem
             local completion_item = {
