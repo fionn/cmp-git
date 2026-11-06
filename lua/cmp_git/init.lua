@@ -98,10 +98,21 @@ function source:complete(params, callback)
     -- Because the triggering character ":" shouldn't be entered, we need to get
     -- the completion to eat it. We do this by setting the completion item's
     -- textEdit.range, which is a shared table that we update on completion.
+    -- Because we micromanage this for the trigger character, we must also
+    -- consider keyword completions.
+
+    local backtrack = 1
+    if params.completion_context.triggerKind ~= 2 then
+        -- Not invoked via triggering character, so calculate how far we have to
+        -- backtrack.
+        local words = vim.split(params.context.cursor_before_line, " ", {plain=true})
+        backtrack = words[#words]:len()
+    end
+
     local line = params.context.cursor.line
     local character = assert(params.context.cursor.character)
     shared_range.start.line = line
-    shared_range.start.character = character - 1
+    shared_range.start.character = character - backtrack
     shared_range["end"].line = line
     shared_range["end"].character = character
 
