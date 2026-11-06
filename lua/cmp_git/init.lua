@@ -33,18 +33,18 @@ local function get_commits()
             end)
         end
 
-        for x in vim.gsplit(assert(out.stdout), "\ncommit ", {plain=true}) do
-            if not string.match(x, "^commit ") then
+        for commit in vim.gsplit(assert(out.stdout), "\ncommit ", {plain=true}) do
+            if not string.match(commit, "^commit ") then
                 ---@type string
-                x = "commit " .. x
+                commit = "commit " .. commit
             end
 
             ---@type string
-            local hash = assert(x:match("^commit (%x+)"))
+            local hash = assert(commit:match("^commit (%x+)"))
             assert(hash:len() >= 40 and hash:len() <= 64)
 
             ---@type string
-            local title = x:match("\n\n    ([^\n]+)\n") or ""
+            local title = commit:match("\n\n    ([^\n]+)\n") or ""
             -- Ideally this would be truncated to 50 characters, with an …
             -- appended if necessary, but the completion menu truncates more
             -- aggressively anyway so we can save ourselves the trouble.
@@ -54,7 +54,7 @@ local function get_commits()
                 label = string.format("%s %s", hash:sub(1, 7), title),
                 documentation = {
                     kind = "markdown",
-                    value = string.format("```git\n%s\n```", x)
+                    value = string.format("```git\n%s\n```", commit)
                 },
                 textEdit = {
                     newText = hash,
