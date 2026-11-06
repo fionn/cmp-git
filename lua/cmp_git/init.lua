@@ -53,8 +53,8 @@ local function get_commits()
             local completion_item = {
                 label = string.format("%s %s", hash:sub(1, 7), title),
                 documentation = {
-                    kind = "plaintext",
-                    value = x,
+                    kind = "markdown",
+                    value = string.format("```git\n%s\n```", x)
                 },
                 textEdit = {
                     newText = hash,
