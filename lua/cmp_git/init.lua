@@ -21,7 +21,12 @@ local function get_commits()
     if updated_commits then return end
     updated_commits = true
 
-    vim.system({"git", "log", "--expand-tabs=4", "--no-color", "--decorate=short", "-n", "100"}, system_opts, function(out)
+    local cmd = {
+        "git", "log",
+        "--expand-tabs=4", "--no-color", "--decorate=short",
+        "-n", "100"
+    }
+    vim.system(cmd, system_opts, function(out)
         if out.code ~= 0 then
             vim.schedule(function()
                 vim.notify("Failed to get commit log", vim.log.levels.ERROR)
