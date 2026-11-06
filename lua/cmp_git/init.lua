@@ -45,9 +45,9 @@ local function get_commits()
 
             ---@type string
             local title = commit:match("\n\n    ([^\n]+)\n") or ""
-            -- Ideally this would be truncated to 50 characters, with an …
-            -- appended if necessary, but the completion menu truncates more
-            -- aggressively anyway so we can save ourselves the trouble.
+            if title:len() > 50 then
+                title = title:sub(1, 49) .. "…"
+            end
 
             ---@type lsp.CompletionItem
             local completion_item = {
