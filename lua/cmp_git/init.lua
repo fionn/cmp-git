@@ -21,7 +21,7 @@ local function get_commits()
     if updated_commits then return end
     updated_commits = true
 
-    vim.system({"git", "log", "-n", "100"}, system_opts, function(out)
+    vim.system({"git", "log", "--expand-tabs=4", "-n", "100"}, system_opts, function(out)
         if out.code ~= 0 then
             vim.schedule(function()
                 vim.notify("Failed to get commit log", vim.log.levels.ERROR)
@@ -38,9 +38,15 @@ local function get_commits()
             local hash = assert(x:match("^commit (%x+)"))
             assert(hash:len() >= 40 and hash:len() <= 64)
 
+            ---@type string
+            local title = x:match("\n\n    ([^\n]+)\n") or ""
+            -- Ideally this would be truncated to 50 characters, with an …
+            -- appended if necessary, but the completion menu truncates more
+            -- aggressively anyway so we can save ourselves the trouble.
+
             ---@type lsp.CompletionItem
             local completion_item = {
-                label = hash:sub(1, 7),
+                label = string.format("%s %s", hash:sub(1, 7), title),
                 documentation = {
                     kind = "plaintext",
                     value = x,
