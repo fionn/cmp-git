@@ -47,3 +47,9 @@ Set to `math.hugh` to disable keyword completion and require a triggering charac
   + use [fionn/cmp-git-trailers](https://github.com/fionn/cmp-git-trailers).
 * Data from forges:
   + for GitHub issues, pull requests and users, use [fionn/cmp-github](https://github.com/fionn/cmp-github).
+
+## Demo
+
+<div align="center">
+    <a href="https://asciinema.org/a/eVSsaTpbIlB4MacU"><img width="600" alt="Example Git commit completion using fionn/cmp-git" src="https://github.com/user-attachments/assets/2f341058-a475-46ef-a7b5-299aa9c46e17"></a>
+</div>
